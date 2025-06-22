@@ -1,33 +1,40 @@
 import 'package:techtutorpro/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:techtutorpro/features/transaction/domain/entities/transaction_status.dart';
 
 class TransactionModel extends TransactionEntity {
   const TransactionModel({
-    required super.transactionId,
+    required super.id,
+    required super.courseId,
     required super.courseName,
+    required super.amount,
     required super.date,
-    required super.price,
     required super.status,
-    required super.paymentMethod,
-  });
+    super.coverImage,
+    super.paymentMethod,
+  }) : super(price: amount);
 
   factory TransactionModel.fromJson(Map<String, dynamic> json) {
     return TransactionModel(
-      transactionId: json['transactionId'] as String,
-      courseName: json['courseName'] as String,
-      date: DateTime.parse(json['date'] as String),
-      price: json['price'] as int,
-      status: json['status'] as String,
-      paymentMethod: json['paymentMethod'] as String,
+      id: json['id'],
+      courseId: json['courseId'],
+      courseName: json['courseName'],
+      coverImage: json['coverImage'] as String?,
+      amount: json['amount'],
+      date: DateTime.parse(json['date']),
+      status: TransactionStatus.fromString(json['status']),
+      paymentMethod: json['paymentMethod'] as String?,
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'transactionId': transactionId,
+      'id': id,
+      'courseId': courseId,
       'courseName': courseName,
+      'coverImage': coverImage,
+      'amount': amount,
       'date': date.toIso8601String(),
-      'price': price,
-      'status': status,
+      'status': status.name,
       'paymentMethod': paymentMethod,
     };
   }

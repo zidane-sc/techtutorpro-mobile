@@ -18,8 +18,9 @@ class CourseRemoteDataSourceImpl implements CourseRemoteDataSource {
         description:
             'Learn the fundamentals of Flutter and Dart to build beautiful, natively compiled applications for mobile, web, and desktop from a single codebase.',
         price: 200000,
+        discountedPrice: 100000,
         level: 'Pemula',
-        studentCount: 1250,
+        studentCount: 3000,
         materialCount: 50,
         durationInMinutes: 600,
         rating: 4.7,
@@ -419,8 +420,9 @@ else:
         description:
             'Dive deep into the advanced concepts of JavaScript including closures, prototypes, async/await, and more. Perfect for developers looking to master the language.',
         price: 250000,
+        discountedPrice: 175000,
         level: 'Lanjutan',
-        studentCount: 2100,
+        studentCount: 500,
         materialCount: 65,
         durationInMinutes: 720,
         rating: 4.9,
@@ -441,7 +443,7 @@ else:
         studentCount: 3500,
         materialCount: 120,
         durationInMinutes: 900,
-        rating: 4.9,
+        rating: 4.5,
         reviewCount: 890,
         tags: ['web-dev', 'fullstack', 'html', 'css', 'javascript', 'react'],
         method: 'Video',
@@ -484,6 +486,7 @@ else:
         description:
             'Learn modern UI/UX design principles and master Figma to create stunning user interfaces. From wireframes to prototypes, this course covers everything you need.',
         price: 180000,
+        discountedPrice: 90000,
         level: 'Menengah',
         studentCount: 1200,
         materialCount: 45,
@@ -501,11 +504,12 @@ else:
         description:
             'Explore the world of data science using Python. Learn pandas, numpy, matplotlib, and machine learning algorithms to analyze and visualize data effectively.',
         price: 280000,
+        discountedPrice: 210000,
         level: 'Lanjutan',
         studentCount: 950,
         materialCount: 80,
         durationInMinutes: 780,
-        rating: 4.7,
+        rating: 4.9,
         reviewCount: 420,
         tags: ['data-science', 'python', 'machine-learning', 'pandas'],
         method: 'Video',
@@ -535,6 +539,7 @@ else:
         description:
             'Master server-side development with Node.js and Express. Build RESTful APIs, work with databases, and deploy your applications to production.',
         price: 200000,
+        discountedPrice: 120000,
         level: 'Menengah',
         studentCount: 1400,
         materialCount: 55,
@@ -545,6 +550,420 @@ else:
         method: 'Video',
         materialSections: [],
         reviews: []),
+    CourseEntity(
+      id: '9',
+      title: 'Cyber Security Essentials for Beginners',
+      thumbnail: 'https://picsum.photos/400/250?random=9',
+      description:
+          'Learn the fundamentals of cyber security to protect your systems and data from cyber attacks. Covers basics of network security, cryptography, and ethical hacking.',
+      price: 220000,
+      discountedPrice: 150000,
+      level: 'Pemula',
+      studentCount: 1100,
+      materialCount: 40,
+      durationInMinutes: 500,
+      rating: 4.7,
+      reviewCount: 280,
+      tags: ['cyber-security', 'networking', 'ethical-hacking'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'Introduction to Cyber Security',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'What is Cyber Security?',
+              type: CourseMaterialType.text,
+              durationInMinutes: 15,
+              content:
+                  '# What is Cyber Security?\n\nA brief overview of the field of cyber security.',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'Common Threats',
+              type: CourseMaterialType.video,
+              durationInMinutes: 20,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'John Doe',
+          review: 'Very insightful for beginners!',
+          rating: 5,
+          date: DateTime(2024, 6, 10),
+        ),
+        CourseReviewEntity(
+          id: 'r2',
+          studentName: 'Jane Smith',
+          review: 'Good starting point.',
+          rating: 4,
+          date: DateTime(2024, 6, 11),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '10',
+      title: 'DevOps from Scratch: CI/CD with Jenkins and Docker',
+      thumbnail: 'https://picsum.photos/400/250?random=10',
+      description:
+          'Master DevOps principles and tools like Jenkins, Docker, and Kubernetes. Learn to automate your build, test, and deployment pipelines for faster delivery.',
+      price: 320000,
+      level: 'Lanjutan',
+      studentCount: 600,
+      materialCount: 70,
+      durationInMinutes: 800,
+      rating: 4.9,
+      reviewCount: 410,
+      tags: ['devops', 'ci-cd', 'jenkins', 'docker', 'kubernetes'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'Introduction to DevOps',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'DevOps Principles',
+              type: CourseMaterialType.text,
+              durationInMinutes: 20,
+              content:
+                  '# DevOps Principles\n\nUnderstanding the core concepts of DevOps.',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'CI/CD Pipeline Overview',
+              type: CourseMaterialType.video,
+              durationInMinutes: 25,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+          ],
+        ),
+        const CourseMaterialSectionEntity(
+          id: 's2',
+          title: 'Hands-on with Docker',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm3',
+              title: 'Creating Dockerfiles',
+              type: CourseMaterialType.text,
+              durationInMinutes: 30,
+              content:
+                  '# Creating Dockerfiles\n\nLearn to write effective Dockerfiles for your applications.',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'Chris Green',
+          review: 'This course is a game-changer!',
+          rating: 5,
+          date: DateTime(2024, 6, 1),
+        ),
+        CourseReviewEntity(
+          id: 'r2',
+          studentName: 'Patricia White',
+          review: 'Excellent content and great instructor.',
+          rating: 5,
+          date: DateTime(2024, 6, 5),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '11',
+      title: 'AI for Everyone: Understanding Artificial Intelligence',
+      thumbnail: 'https://picsum.photos/400/250?random=11',
+      description:
+          'A non-technical introduction to Artificial Intelligence. Understand what AI is, what it can and cannot do, and how it impacts society. No prior experience required.',
+      price: 100000,
+      level: 'Pemula',
+      studentCount: 4500,
+      materialCount: 20,
+      durationInMinutes: 240,
+      rating: 4.6,
+      reviewCount: 1200,
+      tags: ['ai', 'machine-learning', 'non-technical'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'What is AI?',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'Defining Artificial Intelligence',
+              type: CourseMaterialType.text,
+              durationInMinutes: 10,
+              content:
+                  '# Defining AI\n\nA simple explanation of what AI is and its history.',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'Alex Ray',
+          review: 'Finally, an AI course I can understand!',
+          rating: 5,
+          date: DateTime(2024, 5, 28),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '12',
+      title: 'SQL for Data Analysis: From Beginner to Pro',
+      thumbnail: 'https://picsum.photos/400/250?random=12',
+      description:
+          'Master SQL for data analysis. Learn to write complex queries, join tables, and extract valuable insights from databases. Covers PostgreSQL and MySQL.',
+      price: 180000,
+      level: 'Menengah',
+      studentCount: 2200,
+      materialCount: 50,
+      durationInMinutes: 550,
+      rating: 4.8,
+      reviewCount: 650,
+      tags: ['sql', 'data-analysis', 'database', 'postgresql', 'mysql'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'SQL Fundamentals',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'SELECT statements',
+              type: CourseMaterialType.video,
+              durationInMinutes: 20,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'Filtering with WHERE',
+              type: CourseMaterialType.text,
+              durationInMinutes: 15,
+              content:
+                  '# Filtering Data\n\nLearn to use the WHERE clause to filter your data.',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'Sam Brown',
+          review: 'The best SQL course I have ever taken.',
+          rating: 5,
+          date: DateTime(2024, 6, 2),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '13',
+      title: 'Game Development with Unity',
+      thumbnail: 'https://picsum.photos/400/250?random=13',
+      description:
+          'Learn to build 2D and 3D games with Unity. This course covers C# scripting, physics, animation, and UI development for games.',
+      price: 350000,
+      discountedPrice: 250000,
+      level: 'Menengah',
+      studentCount: 1700,
+      materialCount: 80,
+      durationInMinutes: 950,
+      rating: 4.8,
+      reviewCount: 550,
+      tags: ['gamedev', 'unity', 'c#', '3d'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'Introduction to Unity',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'Unity Interface',
+              type: CourseMaterialType.video,
+              durationInMinutes: 20,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'Basic C# Scripting',
+              type: CourseMaterialType.text,
+              durationInMinutes: 25,
+              content:
+                  '# Basic C# Scripting\n\nAn introduction to scripting in Unity with C#.',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'GamingPro',
+          review: 'Awesome course for aspiring game devs!',
+          rating: 5,
+          date: DateTime(2024, 5, 25),
+        ),
+        CourseReviewEntity(
+          id: 'r2',
+          studentName: 'PixelArt',
+          review: 'Very detailed and easy to follow.',
+          rating: 4,
+          date: DateTime(2024, 5, 26),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '14',
+      title: 'Cloud Computing with AWS',
+      thumbnail: 'https://picsum.photos/400/250?random=14',
+      description:
+          'Become an AWS expert. Learn about core AWS services like EC2, S3, RDS, and Lambda. Prepare for AWS certification exams.',
+      price: 400000,
+      level: 'Lanjutan',
+      studentCount: 700,
+      materialCount: 90,
+      durationInMinutes: 1000,
+      rating: 4.9,
+      reviewCount: 720,
+      tags: ['aws', 'cloud', 'devops', 'iaas'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'AWS Fundamentals',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'What is Cloud Computing?',
+              type: CourseMaterialType.text,
+              durationInMinutes: 15,
+              content:
+                  '# What is Cloud Computing?\n\nLearn the fundamentals of cloud computing and its benefits.',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'Tour of AWS Console',
+              type: CourseMaterialType.video,
+              durationInMinutes: 15,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'CloudArchitect',
+          review: 'Best AWS course out there!',
+          rating: 5,
+          date: DateTime(2024, 6, 8),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '15',
+      title: 'Digital Marketing Fundamentals',
+      thumbnail: 'https://picsum.photos/400/250?random=15',
+      description:
+          'Master digital marketing with this comprehensive course. Learn SEO, SEM, social media marketing, email marketing, and content strategy.',
+      price: 150000,
+      level: 'Pemula',
+      studentCount: 5200,
+      materialCount: 50,
+      durationInMinutes: 450,
+      rating: 4.5,
+      reviewCount: 1500,
+      tags: ['marketing', 'seo', 'social-media', 'business'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'Introduction to Digital Marketing',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'The Marketing Funnel',
+              type: CourseMaterialType.text,
+              durationInMinutes: 20,
+              content:
+                  '# The Marketing Funnel\n\nUnderstand the journey of a customer.',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'Understanding SEO',
+              type: CourseMaterialType.video,
+              durationInMinutes: 25,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'Marketer101',
+          review: 'Great overview of the digital marketing landscape.',
+          rating: 5,
+          date: DateTime(2024, 6, 12),
+        ),
+      ],
+    ),
+    CourseEntity(
+      id: '16',
+      title: 'Blockchain and Cryptocurrency Basics',
+      thumbnail: 'https://picsum.photos/400/250?random=16',
+      description:
+          'Understand the technology behind Bitcoin and other cryptocurrencies. Learn about blockchain, smart contracts, and the future of decentralized finance (DeFi).',
+      price: 250000,
+      level: 'Pemula',
+      studentCount: 1900,
+      materialCount: 35,
+      durationInMinutes: 380,
+      rating: 4.6,
+      reviewCount: 450,
+      tags: ['blockchain', 'crypto', 'bitcoin', 'ethereum', 'web3'],
+      method: 'Video',
+      materialSections: [
+        const CourseMaterialSectionEntity(
+          id: 's1',
+          title: 'What is Blockchain?',
+          materials: [
+            CourseMaterialEntity(
+              id: 'm1',
+              title: 'Decentralization Explained',
+              type: CourseMaterialType.text,
+              durationInMinutes: 20,
+              content:
+                  '# Decentralization Explained\n\nLearn what it means to be decentralized.',
+            ),
+            CourseMaterialEntity(
+              id: 'm2',
+              title: 'How Bitcoin Works',
+              type: CourseMaterialType.video,
+              durationInMinutes: 30,
+              videoUrl: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+            ),
+          ],
+        ),
+      ],
+      reviews: [
+        CourseReviewEntity(
+          id: 'r1',
+          studentName: 'CryptoKing',
+          review: 'Demystified blockchain for me.',
+          rating: 5,
+          date: DateTime(2024, 6, 14),
+        ),
+      ],
+    ),
   ];
 
   @override

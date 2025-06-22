@@ -33,7 +33,7 @@ class _MainPageState extends State<MainPage> {
   @override
   void didUpdateWidget(covariant MainPage oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.tabIndex != null && widget.tabIndex != oldWidget.tabIndex) {
+    if (widget.tabIndex != null && widget.tabIndex != _selectedIndex) {
       _onItemTapped(widget.tabIndex!);
     }
   }

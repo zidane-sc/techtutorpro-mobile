@@ -260,7 +260,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           children: [
                             CustomTextField(
                               controller: _nameController,
-                              hintText: 'Full Name',
+                              labelText: 'Full Name',
+                              hintText: 'Enter your full name',
+                              prefixIcon: Icons.person_outline,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your name';
@@ -271,7 +273,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             const SizedBox(height: 20),
                             CustomTextField(
                               controller: _usernameController,
-                              hintText: 'Username',
+                              labelText: 'Username',
+                              hintText: 'Enter your username',
+                              prefixIcon: Icons.alternate_email,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter a username';
@@ -285,13 +289,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             const SizedBox(height: 20),
                             CustomTextField(
                               controller: _emailController,
-                              hintText: 'Email',
+                              labelText: 'Email Address',
+                              hintText: 'Enter your email address',
+                              prefixIcon: Icons.email_outlined,
+                              keyboardType: TextInputType.emailAddress,
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter your email';
                                 }
-                                if (!value.contains('@')) {
-                                  return 'Please enter a valid email';
+                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                    .hasMatch(value)) {
+                                  return 'Please enter a valid email address';
                                 }
                                 return null;
                               },

@@ -9,6 +9,8 @@ import 'package:techtutorpro/features/courses/domain/entities/course_material_en
 import 'package:techtutorpro/features/courses/domain/entities/course_review_entity.dart';
 import 'package:techtutorpro/features/courses/presentation/bloc/course_detail/course_detail_bloc.dart';
 import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_bloc.dart';
+import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_event.dart';
+import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_state.dart';
 import 'package:techtutorpro/injection.dart';
 
 class CourseDetailPage extends StatelessWidget {
@@ -25,7 +27,7 @@ class CourseDetailPage extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) =>
-              getIt<PurchasedCourseBloc>()..add(FetchPurchasedCourses()),
+              getIt<PurchasedCourseBloc>()..add(const FetchPurchasedCourses()),
         ),
       ],
       child: Scaffold(
@@ -59,119 +61,126 @@ class _CourseDetailViewState extends State<CourseDetailView> {
 
   @override
   Widget build(BuildContext context) {
-    // bool isPurchased =
-    //     context.select((CourseDetailBloc bloc) => bloc.state.isPurchased);
-    const bool isPurchased = false; // FIXME: Get from somewhere else
-    return CustomScrollView(
-      slivers: [
-        SliverAppBar(
-          expandedHeight: 250.0,
-          floating: false,
-          pinned: true,
-          stretch: true,
-          backgroundColor: Theme.of(context).colorScheme.primary,
-          foregroundColor: Colors.white,
-          iconTheme: const IconThemeData(color: Colors.white),
-          titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-              ),
-          leading: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: CircleAvatar(
-              backgroundColor: Colors.black26,
-              child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () => context.pop(),
-              ),
-            ),
-          ),
-          flexibleSpace: FlexibleSpaceBar(
-            title: Text(
-              widget.course.title,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                shadows: [
-                  Shadow(
-                    offset: Offset(0, 1),
-                    blurRadius: 3.0,
-                    color: Colors.black54,
+    return BlocBuilder<PurchasedCourseBloc, PurchasedCourseState>(
+      builder: (context, purchasedState) {
+        bool isPurchased = false;
+        if (purchasedState is PurchasedCourseLoaded) {
+          isPurchased = purchasedState.courses
+              .any((course) => course.id == widget.course.id);
+        }
+
+        return CustomScrollView(
+          slivers: [
+            SliverAppBar(
+              expandedHeight: 250.0,
+              floating: false,
+              pinned: true,
+              stretch: true,
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Colors.white,
+              iconTheme: const IconThemeData(color: Colors.white),
+              titleTextStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
                   ),
-                ],
+              leading: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  backgroundColor: Colors.black26,
+                  child: IconButton(
+                    icon: const Icon(Icons.arrow_back, color: Colors.white),
+                    onPressed: () => context.pop(),
+                  ),
+                ),
+              ),
+              flexibleSpace: FlexibleSpaceBar(
+                title: Text(
+                  widget.course.title,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                    shadows: [
+                      Shadow(
+                        offset: Offset(0, 1),
+                        blurRadius: 3.0,
+                        color: Colors.black54,
+                      ),
+                    ],
+                  ),
+                ),
+                stretchModes: const [StretchMode.zoomBackground],
+                background: CachedNetworkImage(
+                  imageUrl: widget.course.thumbnail,
+                  fit: BoxFit.cover,
+                  placeholder: (context, url) =>
+                      const Center(child: CircularProgressIndicator()),
+                  errorWidget: (context, url, error) =>
+                      const Icon(Icons.error, color: Colors.red),
+                ),
               ),
             ),
-            stretchModes: const [StretchMode.zoomBackground],
-            background: CachedNetworkImage(
-              imageUrl: widget.course.thumbnail,
-              fit: BoxFit.cover,
-              placeholder: (context, url) =>
-                  const Center(child: CircularProgressIndicator()),
-              errorWidget: (context, url, error) =>
-                  const Icon(Icons.error, color: Colors.red),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildCourseMeta(context, course: widget.course),
+                    const SizedBox(height: 24),
+                    _buildEnrollButton(context, course: widget.course),
+                    const SizedBox(height: 24),
+                    _buildDescription(context,
+                        description: widget.course.description),
+                    const SizedBox(height: 24),
+                    Text(
+                      "Materi Kursus",
+                      style: Theme.of(context)
+                          .textTheme
+                          .titleLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ),
-        ),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildCourseMeta(context, course: widget.course),
-                const SizedBox(height: 24),
-                _buildEnrollButton(context, course: widget.course),
-                const SizedBox(height: 24),
-                _buildDescription(context,
-                    description: widget.course.description),
-                const SizedBox(height: 24),
-                Text(
-                  "Materi Kursus",
+            if (widget.course.materialSections.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: _buildCourseMaterials(
+                      sections: widget.course.materialSections),
+                ),
+              )
+            else
+              const SliverToBoxAdapter(
+                  child: Center(child: Text("Tidak ada materi tersedia"))),
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  "Ulasan (${widget.course.reviewCount})",
                   style: Theme.of(context)
                       .textTheme
                       .titleLarge
                       ?.copyWith(fontWeight: FontWeight.bold),
                 ),
-              ],
+              ),
             ),
-          ),
-        ),
-        if (widget.course.materialSections.isNotEmpty)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _buildCourseMaterials(
-                  sections: widget.course.materialSections),
-            ),
-          )
-        else
-          const SliverToBoxAdapter(
-              child: Center(child: Text("Tidak ada materi tersedia"))),
-        SliverToBoxAdapter(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              "Ulasan (${widget.course.reviewCount})",
-              style: Theme.of(context)
-                  .textTheme
-                  .titleLarge
-                  ?.copyWith(fontWeight: FontWeight.bold),
-            ),
-          ),
-        ),
-        if (widget.course.reviews.isNotEmpty)
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _buildReviews(reviews: widget.course.reviews),
-            ),
-          )
-        else
-          const SliverToBoxAdapter(
-              child: Center(child: Text("Belum ada ulasan"))),
-        const SliverToBoxAdapter(child: SizedBox(height: 100)),
-      ],
+            if (widget.course.reviews.isNotEmpty)
+              SliverToBoxAdapter(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: _buildReviews(reviews: widget.course.reviews),
+                ),
+              )
+            else
+              const SliverToBoxAdapter(
+                  child: Center(child: Text("Belum ada ulasan"))),
+            const SliverToBoxAdapter(child: SizedBox(height: 100)),
+          ],
+        );
+      },
     );
   }
 

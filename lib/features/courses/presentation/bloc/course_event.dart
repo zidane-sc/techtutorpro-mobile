@@ -38,3 +38,12 @@ class UpdateFilterState extends CourseEvent {
   @override
   List<Object> get props => [selectedLevels, selectedTeknologi, selectedMetode];
 }
+
+class SelectCategory extends CourseEvent {
+  final String categoryId;
+
+  const SelectCategory(this.categoryId);
+
+  @override
+  List<Object> get props => [categoryId];
+}

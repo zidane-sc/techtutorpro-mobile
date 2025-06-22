@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 import 'package:techtutorpro/features/courses/data/datasources/purchased_course_remote_datasource.dart';
+import 'package:techtutorpro/features/courses/domain/entities/course_status.dart';
 import 'package:techtutorpro/features/courses/domain/entities/purchased_course_entity.dart';
 import 'package:techtutorpro/features/courses/domain/repositories/purchased_course_repository.dart';
 
@@ -38,6 +39,7 @@ class PurchasedCourseRepositoryImpl implements PurchasedCourseRepository {
         thumbnail: 'https://picsum.photos/400/250?random=2',
         progress: 0.40, // Updated progress (was 0.30)
         lastAccessed: DateTime.now(),
+        status: CourseStatus.inProgress,
       );
 
       return Right(updatedCourse);

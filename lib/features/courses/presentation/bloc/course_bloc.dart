@@ -17,12 +17,14 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
     on<FetchCourses>(_onFetchCourses);
     on<ApplyFilters>(_onApplyFilters);
     on<UpdateFilterState>(_onUpdateFilterState);
+    on<SelectCategory>(_onSelectCategory);
   }
 
   // Filter state properties
   List<String> _selectedTeknologi = [];
   List<String> _selectedLevels = [];
   List<String> _selectedMetode = [];
+  String _selectedCategory = 'all';
 
   // Getters for current filter state
   List<String> get selectedTeknologi => _selectedTeknologi;
@@ -37,13 +39,49 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
       (failure) => emit(CourseError(message: failure)),
       (courses) {
         _masterCourses = courses;
-        emit(CourseLoaded(courses: courses));
+        emit(CourseLoaded(
+          courses: courses,
+          isFiltered: false,
+          selectedCategory: _selectedCategory,
+        ));
       },
     );
   }
 
+  void _onSelectCategory(SelectCategory event, Emitter<CourseState> emit) {
+    emit(CourseLoading());
+    _selectedCategory = event.categoryId;
+
+    final isFiltered = _selectedCategory != 'all';
+    List<CourseEntity> filteredCourses;
+
+    if (isFiltered) {
+      filteredCourses = _masterCourses.where((course) {
+        return course.tags
+            .any((tag) => tag.toLowerCase().contains(_selectedCategory));
+      }).toList();
+    } else {
+      filteredCourses = _masterCourses;
+    }
+
+    // Reset panel filters when a category is selected for clarity
+    _selectedTeknologi = [];
+    _selectedLevels = [];
+    _selectedMetode = [];
+
+    emit(CourseLoaded(
+      courses: filteredCourses,
+      isFiltered: isFiltered,
+      selectedCategory: _selectedCategory,
+    ));
+  }
+
   void _onApplyFilters(ApplyFilters event, Emitter<CourseState> emit) {
     emit(CourseLoading());
+
+    final bool hasFilters = event.selectedLevels.isNotEmpty ||
+        event.selectedTeknologi.isNotEmpty ||
+        event.selectedMetode.isNotEmpty;
 
     final filteredCourses = _masterCourses.where((course) {
       final levelMatch = event.selectedLevels.isEmpty ||
@@ -58,7 +96,14 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
       return levelMatch && teknologyMatch && methodMatch;
     }).toList();
 
-    emit(CourseLoaded(courses: filteredCourses));
+    // Reset category when panel filter is applied
+    _selectedCategory = 'all';
+
+    emit(CourseLoaded(
+      courses: filteredCourses,
+      isFiltered: hasFilters,
+      selectedCategory: _selectedCategory,
+    ));
   }
 
   void _onUpdateFilterState(
@@ -69,7 +114,12 @@ class CourseBloc extends Bloc<CourseEvent, CourseState> {
 
     // Emit current state to notify listeners of filter state change
     if (state is CourseLoaded) {
-      emit(CourseLoaded(courses: (state as CourseLoaded).courses));
+      final currentState = state as CourseLoaded;
+      emit(CourseLoaded(
+        courses: currentState.courses,
+        isFiltered: currentState.isFiltered,
+        selectedCategory: currentState.selectedCategory,
+      ));
     }
   }
 }

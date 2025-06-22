@@ -1,9 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:percent_indicator/linear_percent_indicator.dart';
+import 'package:techtutorpro/features/courses/domain/entities/course_status.dart';
 import 'package:techtutorpro/features/courses/domain/entities/purchased_course_entity.dart';
-import 'package:techtutorpro/router/app_router.dart';
 
 class PurchasedCourseCard extends StatelessWidget {
   final PurchasedCourseEntity course;
@@ -17,54 +17,67 @@ class PurchasedCourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
       elevation: 4,
+      shadowColor: Colors.black.withOpacity(0.05),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
       ),
       child: InkWell(
-        onTap: () => _showCourseDetails(context),
-        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Row(
             children: [
-              // Header with status badge
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          course.title,
-                          style:
-                              Theme.of(context).textTheme.titleMedium?.copyWith(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                        const SizedBox(height: 8),
-                        _buildStatusBadge(context),
-                      ],
+              // Thumbnail
+              SizedBox(
+                width: 80,
+                height: 80,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12),
+                  child: CachedNetworkImage(
+                    imageUrl: course.thumbnail,
+                    fit: BoxFit.cover,
+                    placeholder: (context, url) => Container(
+                      color: Colors.grey[300],
+                      child: const Center(child: CircularProgressIndicator()),
+                    ),
+                    errorWidget: (context, url, error) => Container(
+                      color: Colors.grey[300],
+                      child:
+                          const Icon(Icons.school_outlined, color: Colors.grey),
                     ),
                   ),
-                ],
+                ),
               ),
-
-              const SizedBox(height: 16),
-
-              // Progress section
-              _buildProgressSection(context),
-
-              const SizedBox(height: 16),
-
-              // Course details
-              _buildCourseDetails(context),
+              const SizedBox(width: 16),
+              // Course Info
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      course.title,
+                      style: GoogleFonts.poppins(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : Colors.black87,
+                      ),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    const SizedBox(height: 8),
+                    _StatusChip(status: course.status),
+                    const SizedBox(height: 12),
+                    _buildProgressSection(context),
+                  ],
+                ),
+              ),
             ],
           ),
         ),
@@ -72,55 +85,10 @@ class PurchasedCourseCard extends StatelessWidget {
     );
   }
 
-  Widget _buildStatusBadge(BuildContext context) {
-    Color badgeColor;
-    String statusText;
-    IconData statusIcon;
-
-    if (course.progress >= 1.0) {
-      badgeColor = Colors.green;
-      statusText = 'Completed';
-      statusIcon = Icons.check_circle;
-    } else if (course.progress > 0.0) {
-      badgeColor = Colors.blue;
-      statusText = 'In Progress';
-      statusIcon = Icons.play_circle;
-    } else {
-      badgeColor = Colors.grey;
-      statusText = 'Not Started';
-      statusIcon = Icons.schedule;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      decoration: BoxDecoration(
-        color: badgeColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: badgeColor.withOpacity(0.3)),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            statusIcon,
-            size: 16,
-            color: badgeColor,
-          ),
-          const SizedBox(width: 4),
-          Text(
-            statusText,
-            style: TextStyle(
-              color: badgeColor,
-              fontSize: 12,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildProgressSection(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -128,65 +96,31 @@ class PurchasedCourseCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              'Progress',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
-            ),
-            Text(
-              '${(course.progress * 100).toStringAsFixed(0)}% complete',
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: Colors.grey[600],
-                  ),
+              '${(course.progress * 100).toStringAsFixed(0)}% Completed',
+              style: GoogleFonts.poppins(
+                fontSize: 12,
+                fontWeight: FontWeight.w500,
+                color: isDark ? Colors.grey[400] : Colors.grey[600],
+              ),
             ),
           ],
         ),
+        const SizedBox(height: 6),
+        LinearPercentIndicator(
+          percent: course.progress,
+          lineHeight: 8,
+          barRadius: const Radius.circular(4),
+          backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+          progressColor: _getStatusColor(course.status),
+          padding: EdgeInsets.zero,
+        ),
         const SizedBox(height: 8),
-        LinearProgressIndicator(
-          value: course.progress,
-          backgroundColor: Colors.grey[300],
-          valueColor: AlwaysStoppedAnimation<Color>(
-            course.progress >= 1.0 ? Colors.green : Colors.blue,
-          ),
-          minHeight: 8,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildCourseDetails(BuildContext context) {
-    return Row(
-      children: [
-        _buildDetailItem(
-          context,
-          Icons.access_time,
-          _formatLastAccessed(),
-        ),
-        const SizedBox(width: 16),
-        _buildDetailItem(
-          context,
-          Icons.trending_up,
-          '${(course.progress * 100).toStringAsFixed(0)}%',
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailItem(BuildContext context, IconData icon, String text) {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(
-          icon,
-          size: 16,
-          color: Colors.grey[600],
-        ),
-        const SizedBox(width: 4),
         Text(
-          text,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: Colors.grey[600],
-              ),
+          'Last accessed: ${_formatLastAccessed()}',
+          style: GoogleFonts.poppins(
+            fontSize: 11,
+            color: isDark ? Colors.grey[500] : Colors.grey[600],
+          ),
         ),
       ],
     );
@@ -196,136 +130,72 @@ class PurchasedCourseCard extends StatelessWidget {
     final now = DateTime.now();
     final difference = now.difference(course.lastAccessed);
 
-    if (difference.inDays == 0) {
-      return 'Today';
-    } else if (difference.inDays == 1) {
-      return 'Yesterday';
-    } else if (difference.inDays < 7) {
-      return '${difference.inDays} days ago';
-    } else if (difference.inDays < 30) {
+    if (difference.inDays < 1) return 'Today';
+    if (difference.inDays < 2) return 'Yesterday';
+    if (difference.inDays < 7) return '${difference.inDays} days ago';
+    if (difference.inDays < 30) {
       final weeks = (difference.inDays / 7).floor();
       return '$weeks week${weeks > 1 ? 's' : ''} ago';
-    } else {
-      final months = (difference.inDays / 30).floor();
-      return '$months month${months > 1 ? 's' : ''} ago';
+    }
+    final months = (difference.inDays / 30).floor();
+    return '$months month${months > 1 ? 's' : ''} ago';
+  }
+
+  Color _getStatusColor(CourseStatus status) {
+    switch (status) {
+      case CourseStatus.completed:
+        return Colors.green;
+      case CourseStatus.inProgress:
+        return Colors.blue;
+      case CourseStatus.notStarted:
+        return Colors.grey;
+    }
+  }
+}
+
+class _StatusChip extends StatelessWidget {
+  final CourseStatus status;
+
+  const _StatusChip({required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: _getColor().withOpacity(0.1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Text(
+        _getText(),
+        style: GoogleFonts.poppins(
+          fontSize: 10,
+          fontWeight: FontWeight.w600,
+          color: _getColor(),
+        ),
+      ),
+    );
+  }
+
+  String _getText() {
+    switch (status) {
+      case CourseStatus.completed:
+        return 'Completed';
+      case CourseStatus.inProgress:
+        return 'In Progress';
+      case CourseStatus.notStarted:
+        return 'Not Started';
     }
   }
 
-  void _showCourseDetails(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        padding: const EdgeInsets.all(24),
-        decoration: BoxDecoration(
-          color: Theme.of(context).scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Course Details',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              course.title,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: _buildDetailCard(
-                    context,
-                    'Progress',
-                    '${(course.progress * 100).toStringAsFixed(1)}%',
-                    Icons.trending_up,
-                    Colors.blue,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: _buildDetailCard(
-                    context,
-                    'Last Accessed',
-                    _formatLastAccessed(),
-                    Icons.access_time,
-                    Colors.orange,
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                  // Navigate to course detail page
-                  context.goNamed(
-                    AppRoute.courseDetail.name,
-                    pathParameters: {'id': course.id},
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                ),
-                child: const Text('More Details'),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailCard(
-    BuildContext context,
-    String title,
-    String value,
-    IconData icon,
-    Color color,
-  ) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withOpacity(0.3)),
-      ),
-      child: Column(
-        children: [
-          Icon(
-            icon,
-            color: color,
-            size: 24,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            value,
-            style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  color: color,
-                ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: Colors.grey[600],
-                ),
-          ),
-        ],
-      ),
-    );
+  Color _getColor() {
+    switch (status) {
+      case CourseStatus.completed:
+        return Colors.green;
+      case CourseStatus.inProgress:
+        return Colors.blue;
+      case CourseStatus.notStarted:
+        return Colors.grey;
+    }
   }
 }

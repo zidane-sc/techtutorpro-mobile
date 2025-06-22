@@ -3,10 +3,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:techtutorpro/features/transaction/domain/entities/transaction_entity.dart';
+import 'package:techtutorpro/features/transaction/domain/entities/transaction_status.dart';
 import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_bloc.dart';
 import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_event.dart';
 import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_state.dart';
+import 'package:techtutorpro/features/transaction/presentation/widgets/transaction_detail_sheet.dart';
+import 'package:techtutorpro/features/transaction/presentation/widgets/transaction_filter_chips.dart';
 import 'package:techtutorpro/features/transaction/presentation/widgets/transaction_list_card.dart';
+import 'package:techtutorpro/features/transaction/presentation/widgets/transaction_search_bar.dart';
 import 'package:techtutorpro/features/transaction/presentation/widgets/transaction_summary_card.dart';
 
 class TransactionsPage extends StatefulWidget {
@@ -27,16 +31,25 @@ class _TransactionsPageState extends State<TransactionsPage> {
     context.read<TransactionBloc>().add(const RefreshTransactions());
   }
 
+  void _showTransactionDetails(TransactionEntity transaction) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (_) => TransactionDetailSheet(
+          transaction: transaction, parentContext: context),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Riwayat Transaksi',
+        title: Text('History Transaction',
             style: GoogleFonts.poppins(fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        actions: [],
       ),
       body: BlocBuilder<TransactionBloc, TransactionState>(
         builder: (context, state) {
@@ -54,7 +67,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
           if (state is TransactionLoaded) {
             return RefreshIndicator(
               onRefresh: _refreshTransactions,
-              child: _buildTransactionBody(state.transactions),
+              child: _buildTransactionBody(state),
             );
           }
 
@@ -67,91 +80,119 @@ class _TransactionsPageState extends State<TransactionsPage> {
     );
   }
 
-  Widget _buildTransactionBody(List<TransactionEntity> transactions) {
+  Widget _buildTransactionBody(TransactionLoaded state) {
     final currencyFormatter =
         NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
 
-    final totalSpent = transactions.fold<int>(
+    final totalSpent = state.allTransactions.fold<int>(
       0,
       (sum, item) =>
-          item.status.toLowerCase() == 'completed' ? sum + item.price : sum,
+          item.status == TransactionStatus.completed ? sum + item.price : sum,
     );
-    final completedCount =
-        transactions.where((t) => t.status.toLowerCase() == 'completed').length;
-    final pendingCount =
-        transactions.where((t) => t.status.toLowerCase() == 'pending').length;
+    final completedCount = state.allTransactions
+        .where((t) => t.status == TransactionStatus.completed)
+        .length;
+    final pendingCount = state.allTransactions
+        .where((t) => t.status == TransactionStatus.pending)
+        .length;
+    final failedCount = state.allTransactions
+        .where((t) => t.status == TransactionStatus.failed)
+        .length;
 
-    return SingleChildScrollView(
+    return CustomScrollView(
       physics: const AlwaysScrollableScrollPhysics(),
-      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const SizedBox(height: 16),
-          GridView.count(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16,
-            mainAxisSpacing: 16,
-            childAspectRatio: 1.3,
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            children: [
-              TransactionSummaryCard(
-                title: 'Total Pengeluaran',
-                value: currencyFormatter.format(totalSpent),
-                icon: Icons.wallet_outlined,
-                color: Colors.blueAccent,
-              ),
-              TransactionSummaryCard(
-                title: 'Total Transaksi',
-                value: transactions.length.toString(),
-                icon: Icons.receipt_long_outlined,
-                color: Colors.orangeAccent,
-              ),
-              TransactionSummaryCard(
-                title: 'Selesai',
-                value: completedCount.toString(),
-                icon: Icons.check_circle_outline,
-                color: Colors.green,
-              ),
-              TransactionSummaryCard(
-                title: 'Menunggu',
-                value: pendingCount.toString(),
-                icon: Icons.hourglass_empty_outlined,
-                color: Colors.amber,
-              ),
-            ],
-          ),
-          const SizedBox(height: 24),
-          Text(
-            'Detail Transaksi',
-            style: GoogleFonts.poppins(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
+      slivers: [
+        SliverPadding(
+          padding: const EdgeInsets.all(16.0),
+          sliver: SliverToBoxAdapter(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 2,
+                    crossAxisSpacing: 12,
+                    mainAxisSpacing: 12,
+                    childAspectRatio: 1.8,
+                  ),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: [
+                    TransactionSummaryCard(
+                      title: 'Total Spent',
+                      value: currencyFormatter.format(totalSpent),
+                      icon: Icons.wallet_outlined,
+                      color: Colors.blueAccent,
+                    ),
+                    TransactionSummaryCard(
+                      title: 'Completed',
+                      value: completedCount.toString(),
+                      icon: Icons.check_circle_outline,
+                      color: Colors.green,
+                    ),
+                    TransactionSummaryCard(
+                      title: 'Pending',
+                      value: pendingCount.toString(),
+                      icon: Icons.hourglass_empty_outlined,
+                      color: Colors.orange,
+                    ),
+                    TransactionSummaryCard(
+                      title: 'Failed',
+                      value: failedCount.toString(),
+                      icon: Icons.cancel_outlined,
+                      color: Colors.red,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TransactionSearchBar(
+                  initialQuery: state.searchQuery,
+                  onSearch: (query) {
+                    context
+                        .read<TransactionBloc>()
+                        .add(SearchTransactions(query: query));
+                  },
+                ),
+                const SizedBox(height: 16),
+                TransactionFilterChips(
+                  selectedStatus: state.activeFilter,
+                  onSelected: (status) {
+                    context
+                        .read<TransactionBloc>()
+                        .add(FilterTransactions(status: status));
+                  },
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          if (transactions.isEmpty)
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 40),
-                child: Text('Tidak ada histori transaksi.',
-                    style: GoogleFonts.poppins()),
-              ),
-            )
-          else
-            ListView.builder(
-              itemCount: transactions.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                final transaction = transactions[index];
-                return TransactionListCard(transaction: transaction);
-              },
-            ),
-          const SizedBox(height: 16),
-        ],
-      ),
+        ),
+        SliverPadding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          sliver: state.filteredTransactions.isEmpty
+              ? SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 40),
+                    child: Center(
+                      child: Text('Tidak ada transaksi yang cocok.',
+                          style: GoogleFonts.poppins()),
+                    ),
+                  ),
+                )
+              : SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final transaction = state.filteredTransactions[index];
+                      return TransactionListCard(
+                        transaction: transaction,
+                        onTap: () => _showTransactionDetails(transaction),
+                      );
+                    },
+                    childCount: state.filteredTransactions.length,
+                  ),
+                ),
+        ),
+        const SliverToBoxAdapter(child: SizedBox(height: 16)),
+      ],
     );
   }
 }

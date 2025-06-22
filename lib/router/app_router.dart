@@ -5,7 +5,9 @@ import 'package:techtutorpro/features/account/presentation/pages/help_center_pag
 import 'package:techtutorpro/features/account/presentation/pages/settings_page.dart';
 import 'package:techtutorpro/features/auth/presentation/pages/login_page.dart';
 import 'package:techtutorpro/features/auth/presentation/pages/register_page.dart';
+import 'package:techtutorpro/features/courses/domain/entities/certificate_entity.dart';
 import 'package:techtutorpro/features/courses/domain/entities/course_entity.dart';
+import 'package:techtutorpro/features/courses/presentation/pages/certificate_page.dart';
 import 'package:techtutorpro/features/courses/presentation/pages/course_detail_page.dart';
 import 'package:techtutorpro/features/courses/presentation/pages/course_list_page.dart';
 import 'package:techtutorpro/features/courses/presentation/pages/course_material_page.dart';
@@ -14,6 +16,10 @@ import 'package:techtutorpro/features/dashboard/presentation/pages/main_page.dar
 import 'package:techtutorpro/features/onboarding/presentation/pages/onboarding_page.dart';
 import 'package:techtutorpro/features/payment/presentation/pages/payment_summary_page.dart';
 import 'package:techtutorpro/features/transaction/presentation/pages/transactions_page.dart';
+import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:techtutorpro/injection.dart';
 
 enum AppRoute {
   onboarding,
@@ -26,6 +32,7 @@ enum AppRoute {
   courseDetail,
   courseMaterial,
   courseFeedback,
+  certificate,
 }
 
 class AppRouter {
@@ -97,6 +104,14 @@ class AppRouter {
                         return FeedbackPage(course: course);
                       },
                     ),
+                    GoRoute(
+                      path: 'certificate',
+                      name: AppRoute.certificate.name,
+                      builder: (context, state) {
+                        final certificate = state.extra as CertificateEntity;
+                        return CertificatePage(certificate: certificate);
+                      },
+                    ),
                   ],
                 ),
               ],
@@ -106,7 +121,13 @@ class AppRouter {
               name: 'paymentSummary',
               builder: (context, state) {
                 final course = state.extra as CourseEntity;
-                return PaymentSummaryPage(course: course);
+                return MultiBlocProvider(
+                  providers: [
+                    BlocProvider(create: (_) => getIt<TransactionBloc>()),
+                    BlocProvider(create: (_) => getIt<PurchasedCourseBloc>()),
+                  ],
+                  child: PaymentSummaryPage(course: course),
+                );
               },
             ),
             GoRoute(

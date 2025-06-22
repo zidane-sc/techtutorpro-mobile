@@ -1,23 +1,39 @@
 import 'package:equatable/equatable.dart';
+import 'package:techtutorpro/features/transaction/domain/entities/transaction_status.dart';
 
 class TransactionEntity extends Equatable {
-  final String transactionId;
+  final String id;
+  final String courseId;
   final String courseName;
+  final String? coverImage;
+  final int amount;
   final DateTime date;
   final int price;
-  final String status;
-  final String paymentMethod;
+  final TransactionStatus status;
+  final String? paymentMethod;
 
   const TransactionEntity({
-    required this.transactionId,
+    required this.id,
+    required this.courseId,
     required this.courseName,
+    this.coverImage,
+    required this.amount,
     required this.date,
     required this.price,
     required this.status,
-    required this.paymentMethod,
+    this.paymentMethod,
   });
 
   @override
-  List<Object?> get props =>
-      [transactionId, courseName, date, price, status, paymentMethod];
+  List<Object?> get props => [
+        id,
+        courseId,
+        courseName,
+        coverImage,
+        amount,
+        date,
+        price,
+        status,
+        paymentMethod,
+      ];
 }

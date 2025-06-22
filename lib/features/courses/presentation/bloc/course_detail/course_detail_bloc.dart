@@ -36,7 +36,7 @@ class CourseDetailBloc extends Bloc<CourseDetailEvent, CourseDetailState> {
           'Python adalah bahasa pemrograman interpretatif multiguna. Tidak seperti bahasa lain yang lebih sulit untuk dibaca dan dipahami, python lebih menekankan pada keterbacaan kode agar lebih mudah untuk memahami sintaks. Hal ini membuat Python sangat mudah dipelajari baik untuk pemula maupun untuk yang sudah menguasai bahasa pemrograman lain.',
       price: 150000,
       discountedPrice: 75000,
-      level: 'Menengah',
+      level: 'Intermediate',
       studentCount: 876,
       materialCount: 40,
       durationInMinutes: 480,

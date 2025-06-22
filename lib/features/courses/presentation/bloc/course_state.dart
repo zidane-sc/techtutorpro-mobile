@@ -13,11 +13,17 @@ class CourseLoading extends CourseState {}
 
 class CourseLoaded extends CourseState {
   final List<CourseEntity> courses;
+  final bool isFiltered;
+  final String selectedCategory;
 
-  const CourseLoaded({required this.courses});
+  const CourseLoaded({
+    required this.courses,
+    this.isFiltered = false,
+    this.selectedCategory = 'all',
+  });
 
   @override
-  List<Object> get props => [courses];
+  List<Object> get props => [courses, isFiltered, selectedCategory];
 }
 
 class CourseError extends CourseState {

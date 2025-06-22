@@ -1,4 +1,4 @@
-part of 'purchased_course_bloc.dart';
+import 'package:equatable/equatable.dart';
 
 abstract class PurchasedCourseEvent extends Equatable {
   const PurchasedCourseEvent();
@@ -7,7 +7,9 @@ abstract class PurchasedCourseEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class FetchPurchasedCourses extends PurchasedCourseEvent {}
+class FetchPurchasedCourses extends PurchasedCourseEvent {
+  const FetchPurchasedCourses();
+}
 
 class UpdateCourseProgress extends PurchasedCourseEvent {
   final String courseId;
@@ -20,4 +22,13 @@ class UpdateCourseProgress extends PurchasedCourseEvent {
 
   @override
   List<Object> get props => [courseId, completedMaterials];
+}
+
+class GetCourseForNavigation extends PurchasedCourseEvent {
+  final String courseId;
+
+  const GetCourseForNavigation(this.courseId);
+
+  @override
+  List<Object> get props => [courseId];
 }

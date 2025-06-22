@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lottie/lottie.dart';
+import 'package:techtutorpro/core/widgets/primary_button.dart';
 
 class PaymentSuccessDialog extends StatefulWidget {
   const PaymentSuccessDialog({super.key});
@@ -51,7 +52,7 @@ class _PaymentSuccessDialogState extends State<PaymentSuccessDialog> {
             ),
             const SizedBox(height: 8),
             Text(
-              'You will be redirected to your courses.',
+              'You will be redirected to your courses in 3 seconds.',
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                     color: Colors.grey.shade600,

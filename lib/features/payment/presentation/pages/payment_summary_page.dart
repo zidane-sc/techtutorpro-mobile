@@ -4,6 +4,11 @@ import 'package:intl/intl.dart';
 import 'package:techtutorpro/core/widgets/primary_button.dart';
 import 'package:techtutorpro/features/courses/domain/entities/course_entity.dart';
 import 'package:techtutorpro/features/payment/presentation/widgets/payment_success_dialog.dart';
+import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_bloc.dart';
+import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_event.dart';
+import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_bloc.dart';
+import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_event.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentSummaryPage extends StatefulWidget {
   const PaymentSummaryPage({super.key, required this.course});
@@ -267,10 +272,8 @@ class _PaymentSummaryPageState extends State<PaymentSummaryPage> {
 
           await Future.delayed(const Duration(seconds: 2));
 
-          // ignore: use_build_context_synchronously
           Navigator.of(context).pop(); // Close loading dialog
 
-          // ignore: use_build_context_synchronously
           showDialog(
             context: context,
             barrierDismissible: false,

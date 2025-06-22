@@ -5,6 +5,7 @@ import 'package:injectable/injectable.dart';
 import 'package:open_file_plus/open_file_plus.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:flutter/services.dart' show rootBundle;
 
 @lazySingleton
 class DownloadService {
@@ -47,6 +48,33 @@ class DownloadService {
 
     final openResult = await OpenFile.open(savePath);
 
+    if (openResult.type != ResultType.done) {
+      throw 'Could not open the downloaded file: ${openResult.message}';
+    }
+  }
+
+  Future<void> saveAndOpenAssetFromBundle(
+      String assetPath, String fileName) async {
+    final hasPermission = await requestPermissions();
+    if (!hasPermission) {
+      throw 'Storage permission denied';
+    }
+
+    // Get the byte data of the asset
+    final byteData = await rootBundle.load(assetPath);
+    final buffer = byteData.buffer;
+
+    // Get the public downloads directory
+    final dir = await getExternalStoragePublicDirectory('Download');
+    final filePath = '${dir?.path}/$fileName';
+
+    // Write the file
+    await File(filePath).writeAsBytes(
+      buffer.asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    );
+
+    // Open the file
+    final openResult = await OpenFile.open(filePath);
     if (openResult.type != ResultType.done) {
       throw 'Could not open the downloaded file: ${openResult.message}';
     }

@@ -1,5 +1,6 @@
 import 'package:techtutorpro/features/transaction/data/models/transaction_model.dart';
 import 'package:injectable/injectable.dart';
+import 'package:techtutorpro/features/transaction/domain/entities/transaction_status.dart';
 
 abstract class TransactionDataSource {
   Future<List<TransactionModel>> getTransactions();
@@ -10,74 +11,62 @@ class TransactionDataSourceImpl implements TransactionDataSource {
   @override
   Future<List<TransactionModel>> getTransactions() async {
     // Simulate network delay
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(seconds: 1));
 
-    // Mock data
-    return [
-      TransactionModel(
-        transactionId: 'TTP-12345-ABCDE',
-        courseName: 'Flutter Development Masterclass',
-        date: DateTime.parse('2024-01-15'),
-        price: 299000,
-        status: 'Completed',
-        paymentMethod: 'Credit Card',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-67890-FGHIJ',
-        courseName: 'React Native Fundamentals',
-        date: DateTime.parse('2024-01-10'),
-        price: 199000,
-        status: 'Completed',
-        paymentMethod: 'GoPay',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-11223-KLMNO',
-        courseName: 'UI/UX Design Principles',
-        date: DateTime.parse('2024-01-05'),
-        price: 149000,
-        status: 'Completed',
-        paymentMethod: 'Credit Card',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-44556-PQRST',
-        courseName: 'Backend Development with Node.js',
-        date: DateTime.parse('2023-12-28'),
-        price: 249000,
-        status: 'Completed',
-        paymentMethod: 'Bank Transfer',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-77889-UVWXY',
-        courseName: 'Machine Learning Basics',
-        date: DateTime.parse('2023-12-20'),
-        price: 399000,
-        status: 'Pending',
-        paymentMethod: 'Bank Transfer',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-10111-ZABCD',
-        courseName: 'DevOps & CI/CD Pipeline',
-        date: DateTime.parse('2023-12-15'),
-        price: 179000,
-        status: 'Failed',
-        paymentMethod: 'Credit Card',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-21314-EFGHI',
-        courseName: 'Database Design & SQL',
-        date: DateTime.parse('2023-12-10'),
-        price: 129000,
-        status: 'Completed',
-        paymentMethod: 'GoPay',
-      ),
-      TransactionModel(
-        transactionId: 'TTP-51617-JKLMN',
-        courseName: 'Mobile App Security',
-        date: DateTime.parse('2023-12-05'),
-        price: 159000,
-        status: 'Completed',
-        paymentMethod: 'Bank Transfer',
-      ),
+    // Dummy data
+    final List<Map<String, dynamic>> dummyData = [
+      {
+        'id': 'trx001',
+        'courseId': '1',
+        'courseName': 'Flutter for Beginners: From Zero to Hero',
+        'coverImage': 'https://picsum.photos/400/250?random=1',
+        'amount': 100000,
+        'date': '2023-10-26T10:00:00Z',
+        'status': 'completed',
+        'paymentMethod': 'Credit Card',
+      },
+      {
+        'id': 'trx002',
+        'courseId': '2',
+        'courseName': 'Belajar Python: Dari Dasar hingga Mahir',
+        'coverImage': 'https://picsum.photos/400/250?random=2',
+        'amount': 75000,
+        'date': '2023-10-25T14:30:00Z',
+        'status': 'completed',
+        'paymentMethod': 'PayPal',
+      },
+      {
+        'id': 'trx003',
+        'courseId': '3',
+        'courseName': 'Advanced JavaScript Concepts',
+        'coverImage': 'https://picsum.photos/400/250?random=3',
+        'amount': 120000,
+        'date': '2023-10-24T18:45:00Z',
+        'status': 'pending',
+        'paymentMethod': 'Bank Transfer',
+      },
+      {
+        'id': 'trx004',
+        'courseId': '4',
+        'courseName': 'Complete Web Development Bootcamp',
+        'coverImage': 'https://picsum.photos/400/250?random=4',
+        'amount': 250000,
+        'date': '2023-10-22T09:15:00Z',
+        'status': 'failed',
+        'paymentMethod': 'Credit Card',
+      },
+      {
+        'id': 'trx005',
+        'courseId': '5',
+        'courseName': 'UI/UX Design with Figma',
+        'coverImage': 'https://picsum.photos/400/250?random=5',
+        'amount': 90000,
+        'date': '2023-10-20T11:00:00Z',
+        'status': 'completed',
+        'paymentMethod': 'GoPay',
+      },
     ];
+
+    return dummyData.map((json) => TransactionModel.fromJson(json)).toList();
   }
 }

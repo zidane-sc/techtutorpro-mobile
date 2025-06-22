@@ -73,14 +73,14 @@ class _HelpCenterPageState extends State<HelpCenterPage> {
       icon: Icons.phone_outlined,
       title: 'Phone Support',
       subtitle: 'Call us directly',
-      action: '+1 (555) 123-4567',
+      action: '+62 895-1234-5678',
       color: Colors.orange,
     ),
     ContactOption(
       icon: Icons.schedule_outlined,
       title: 'Support Hours',
       subtitle: 'When we\'re available',
-      action: 'Mon-Fri 9AM-6PM EST',
+      action: 'Mon-Fri 9AM-6PM WIB',
       color: Colors.purple,
     ),
   ];
