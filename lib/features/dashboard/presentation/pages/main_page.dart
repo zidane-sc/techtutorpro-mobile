@@ -12,6 +12,9 @@ import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_
 import 'package:techtutorpro/features/transaction/presentation/pages/transactions_page.dart';
 import 'package:techtutorpro/injection.dart';
 import 'package:techtutorpro/router/app_router.dart';
+import 'package:techtutorpro/features/news/presentation/pages/news_feed_page.dart';
+import 'package:techtutorpro/features/news/presentation/bloc/news_bloc.dart';
+import 'package:techtutorpro/features/news/domain/usecases/get_news_headlines_usecase.dart';
 
 class MainPage extends StatefulWidget {
   final int? tabIndex;
@@ -44,24 +47,28 @@ class _MainPageState extends State<MainPage> {
     });
   }
 
-  static final List<Widget> _widgetOptions = <Widget>[
-    BlocProvider(
-      create: (context) => getIt<CourseBloc>(),
-      child: const CourseListPage(),
-    ),
-    BlocProvider(
-      create: (context) => getIt<PurchasedCourseBloc>(),
-      child: const MyCoursesPage(),
-    ),
-    BlocProvider(
-      create: (context) => getIt<TransactionBloc>(),
-      child: const TransactionsPage(),
-    ),
-    BlocProvider(
-      create: (context) => getIt<AccountBloc>(),
-      child: const AccountPage(),
-    ),
-  ];
+  List<Widget> get _widgetOptions => [
+        BlocProvider(
+          create: (context) => getIt<CourseBloc>(),
+          child: const CourseListPage(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<PurchasedCourseBloc>(),
+          child: const MyCoursesPage(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<TransactionBloc>(),
+          child: const TransactionsPage(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<AccountBloc>(),
+          child: const AccountPage(),
+        ),
+        BlocProvider(
+          create: (context) => NewsBloc(getIt<GetNewsHeadlinesUseCase>()),
+          child: const NewsFeedPage(),
+        ),
+      ];
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +99,10 @@ class _MainPageState extends State<MainPage> {
             BottomNavigationBarItem(
               icon: Icon(Icons.person),
               label: 'Account',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.newspaper),
+              label: 'News',
             ),
           ],
           currentIndex: _selectedIndex,

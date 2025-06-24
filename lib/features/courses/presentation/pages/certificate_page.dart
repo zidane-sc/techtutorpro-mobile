@@ -25,8 +25,15 @@ class _CertificatePageState extends State<CertificatePage> {
     try {
       final downloadService = getIt<DownloadService>();
       const assetPath = 'assets/dummy/certificate.pdf';
+      String sanitizeFileName(String input) {
+        // Replace all invalid filename characters with '_'
+        return input
+            .replaceAll(RegExp(r'[\\/:*?"<>|]'), '_')
+            .replaceAll(' ', '_');
+      }
+
       final fileName =
-          'TechTutorPro_Certificate_${widget.certificate.courseTitle.replaceAll(' ', '_')}.pdf';
+          'TechTutorPro_Certificate_${sanitizeFileName(widget.certificate.courseTitle)}.pdf';
 
       await downloadService.saveAndOpenAssetFromBundle(assetPath, fileName);
 

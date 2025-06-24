@@ -30,7 +30,9 @@ class _TransactionDetailSheetState extends State<TransactionDetailSheet> {
     try {
       final downloadService = getIt<DownloadService>();
       const assetPath = 'assets/dummy/payment-receipt.pdf';
-      final fileName = 'Invoice_${widget.transaction.id.substring(0, 8)}.pdf';
+      final id = widget.transaction.id;
+      final safeId = id.length >= 8 ? id.substring(0, 8) : id;
+      final fileName = 'Invoice_${safeId}.pdf';
 
       await downloadService.saveAndOpenAssetFromBundle(assetPath, fileName);
 

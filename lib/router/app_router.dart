@@ -20,6 +20,7 @@ import 'package:techtutorpro/features/transaction/presentation/bloc/transaction_
 import 'package:techtutorpro/features/courses/presentation/bloc/purchased_course_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:techtutorpro/injection.dart';
+import 'package:techtutorpro/features/news/presentation/pages/news_feed_page.dart';
 
 enum AppRoute {
   onboarding,
@@ -33,6 +34,7 @@ enum AppRoute {
   courseMaterial,
   courseFeedback,
   certificate,
+  newsFeed,
 }
 
 class AppRouter {
@@ -136,6 +138,11 @@ class AppRouter {
               builder: (context, state) => const TransactionsPage(),
             ),
           ],
+        ),
+        GoRoute(
+          path: '/news',
+          name: 'newsFeed',
+          builder: (context, state) => const NewsFeedPage(),
         ),
       ],
     );
